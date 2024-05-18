@@ -1,3 +1,4 @@
+import cookieParser from "cookie-parser";
 import express from "express";
 import dotenv from 'dotenv';
 
@@ -6,7 +7,7 @@ import userRoutes from './Routes/user_routes.js';
 import connectDB from './config/db.js';
 
 dotenv.config();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 
 connectDB();
 
@@ -19,5 +20,6 @@ app.use('/api/users', userRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
+app.use(cookieParser())
 
 app.listen(port, () => console.log(`Server start on port ${port}`));
