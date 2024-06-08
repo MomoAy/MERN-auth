@@ -4,29 +4,22 @@ import jwt from 'jsonwebtoken';
 import User from '../Models/user_model.js';
 
 const protect = asyncHandler(async (req, res, next) => {
-  try {
-    let token;
+  let token;
 
-    token = req.cookies.jwt;
-    if (token) {
-
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = await User.findById(decoded.userId).select('-password');
-        next();
-      } catch (error) {
-        res.status(401);
-        throw new Error('Not authorized, invalid token');
-      }
-    } else {
+  token = req.cookies.jwt;
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = await User.findById(decoded.userId).select('-password');
+      next();
+    } catch (error) {
       res.status(401);
-      throw new Error('Not authorized, no token');
+      throw new Error('Not authorized, invalid token');
     }
-  } catch (error) {
-    res.status(501);
-    throw new Error('Not authorized ');
+  } else {
+    res.status(401);
+    throw new Error('Not authorized, no token');
   }
-
 });
 
-export { protect }; 
+export { protect };
